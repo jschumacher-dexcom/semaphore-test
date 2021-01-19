@@ -15,3 +15,5 @@ blocks:
             - docker build -t base .
             - 'docker tag base jsdx/private:base'
             - 'docker push jsdx1/private:base'
+      secrets:
+        - name: Docker
