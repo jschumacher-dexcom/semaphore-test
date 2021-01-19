@@ -13,7 +13,7 @@ blocks:
             - checkout
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - docker build -t base --cache-from jsdx1/private:base .
-            - 'docker tag base jsdx/private:base'
+            - 'docker tag base jsdx1/private:base'
             - 'docker push jsdx1/private:base'
       secrets:
         - name: Docker
