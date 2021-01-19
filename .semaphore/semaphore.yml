@@ -11,4 +11,7 @@ blocks:
         - name: docker build
           commands:
             - checkout
-            - docker build -t your-image .
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - docker build -t base .
+            - 'docker tag base jsdx/private:base'
+            - 'docker push jsdx1/private:base'
