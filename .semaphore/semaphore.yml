@@ -21,6 +21,7 @@ blocks:
       secrets:
         - name: Docker
   - name: Child Image
+    dependencies: ["Base Image"]
     run:
       when: "change_in('/child/')"
     task:
