@@ -5,7 +5,9 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build
+  - name: Base Image
+    run:
+      when: "change_in('/base/')"
     task:
       jobs:
         - name: docker build
@@ -13,8 +15,21 @@ blocks:
             - checkout
             - docker --version
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - 'DOCKER_BUILDKIT=1 docker build -t base --cache-from jsdx1/private:base --build-arg BUILDKIT_INLINE_CACHE=1 --progress=plain .'
+            - 'DOCKER_BUILDKIT=1 docker build -t base --cache-from jsdx1/private:base --build-arg BUILDKIT_INLINE_CACHE=1 --progress=plain ./base'
             - 'docker tag base jsdx1/private:base'
             - 'docker push jsdx1/private:base'
+      secrets:
+        - name: Docker
+  - name: Child Image
+    run:
+      when: "change_in('/child/')"
+    task:
+      jobs:
+        - name: docker build
+          commands:
+            - checkout
+            - docker --version
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - 'DOCKER_BUILDKIT=1 docker build -t child --build-arg BUILDKIT_INLINE_CACHE=1 --progress=plain ./base'
       secrets:
         - name: Docker
