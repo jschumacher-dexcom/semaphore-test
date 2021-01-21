@@ -13,7 +13,6 @@ blocks:
       jobs:
         - name: docker build
           commands:
-            - echo $SEMAPHORE_GIT_BRANCH
             - checkout
             - docker --version
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
@@ -22,7 +21,7 @@ blocks:
             - 'docker push jsdx1/private:base-$SEMAPHORE_GIT_SHA'
             - echo jsdx1/private:base-$SEMAPHORE_GIT_SHA > base-image
             - artifact push workflow base-image
-            - if [ '$SEMAPHORE_GIT_BRANCH' = 'main' ]; then artifact push project base-image; fi
+            - if [ '$SEMAPHORE_GIT_BRANCH' = 'main' ]; then echo On main!; artifact push project base-image; fi
       secrets:
         - name: Docker
   - name: Child Image 1
