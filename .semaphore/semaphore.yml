@@ -21,7 +21,7 @@ blocks:
             - 'docker push jsdx1/private:base-$SEMAPHORE_GIT_SHA'
             - echo jsdx1/private:base-$SEMAPHORE_GIT_SHA > base-image
             - artifact push workflow base-image
-            - if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then artifact push -f project base-image; fi
+            - if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then artifact push project base-image -f; fi
       secrets:
         - name: Docker
   - name: Child Image 1
@@ -41,7 +41,7 @@ blocks:
             - 'docker push jsdx1/private:child1-$SEMAPHORE_GIT_SHA'
             - echo jsdx1/private:child1-$SEMAPHORE_GIT_SHA > child1-image
             - artifact push workflow child1-image
-            - if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then artifact push -f project child1-image; fi
+            - if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then artifact push project child1-image -f; fi
       secrets:
         - name: Docker
       epilogue:
@@ -68,7 +68,7 @@ blocks:
             - 'docker push jsdx1/private:child2-$SEMAPHORE_GIT_SHA'
             - echo jsdx1/private:child2-$SEMAPHORE_GIT_SHA > child2-image
             - artifact push workflow child2-image
-            - if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then artifact push -f project child2-image; fi
+            - if [ "$SEMAPHORE_GIT_BRANCH" = "main" ]; then artifact push project child2-image -f; fi
       secrets:
         - name: Docker
   - name: Integration
