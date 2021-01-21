@@ -17,8 +17,10 @@ blocks:
             - docker --version
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - 'DOCKER_BUILDKIT=1 docker build -t base --cache-from jsdx1/private:base --build-arg BUILDKIT_INLINE_CACHE=1 --progress=plain ./base'
-            - 'docker tag base jsdx1/private:base'
-            - 'docker push jsdx1/private:base'
+            - 'docker tag base jsdx1/private:base-$SEMAPHORE_GIT_SHA'
+            - 'docker push jsdx1/private:base-$SEMAPHORE_GIT_SHA'
+            - mkdir -p images && echo jsdx1/private:base-$SEMAPHORE_GIT_SHA > images/base
+            - artifact push workflow images/base
       secrets:
         - name: Docker
   - name: Child Image
@@ -34,5 +36,20 @@ blocks:
             - docker --version
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - DOCKER_BUILDKIT=1 docker build -t child --build-arg BUILDKIT_INLINE_CACHE=1 --progress=plain ./child
+            - 'docker tag base jsdx1/private:child-$SEMAPHORE_GIT_SHA'
+            - 'docker push jsdx1/private:base-$SEMAPHORE_GIT_SHA'
+            - mkdir -p images && echo jsdx1/private:child-$SEMAPHORE_GIT_SHA > images/child
+            - artifact push workflow images/child
       secrets:
         - name: Docker
+  - name: Integration
+    dependencies:
+      - Child Image
+    run:
+      when: "change_in('/', {default_branch: 'main'})"
+    task:
+      jobs:
+        - name: gather images
+          commands:
+            - artifact pull workflow images
+            - cat images/*
