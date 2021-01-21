@@ -7,6 +7,8 @@ agent:
 blocks:
   - name: Base Image
     dependencies: []
+    run:
+      when: "change_in('/base/')"
     task:
       jobs:
         - name: docker build
@@ -22,6 +24,8 @@ blocks:
   - name: Child Image
     dependencies:
       - Base Image
+    run:
+      when: "change_in('/child/')"
     task:
       jobs:
         - name: docker build
