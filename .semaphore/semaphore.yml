@@ -21,6 +21,7 @@ blocks:
             - 'docker push jsdx1/private:base-$SEMAPHORE_GIT_SHA'
             - echo jsdx1/private:base-$SEMAPHORE_GIT_SHA > base-image
             - artifact push workflow base-image
+            - if ['$SEMAPHORE_GIT_BRANCH' == 'main']; then; artifact push project base-image; fi
       secrets:
         - name: Docker
   - name: Child Image 1
@@ -40,6 +41,7 @@ blocks:
             - 'docker push jsdx1/private:child1-$SEMAPHORE_GIT_SHA'
             - echo jsdx1/private:child1-$SEMAPHORE_GIT_SHA > child1-image
             - artifact push workflow child1-image
+            - if ['$SEMAPHORE_GIT_BRANCH' == 'main']; then; artifact push project child1-image; fi
       secrets:
         - name: Docker
       epilogue:
@@ -66,6 +68,7 @@ blocks:
             - 'docker push jsdx1/private:child2-$SEMAPHORE_GIT_SHA'
             - echo jsdx1/private:child2-$SEMAPHORE_GIT_SHA > child2-image
             - artifact push workflow child2-image
+            - if ['$SEMAPHORE_GIT_BRANCH' == 'main']; then; artifact push project child2-image; fi
       secrets:
         - name: Docker
   - name: Integration
@@ -78,6 +81,6 @@ blocks:
       jobs:
         - name: gather images
           commands:
-            - artifact pull workflow base-image && cat base-image
-            - artifact pull workflow child1-image && cat child1-image
-            - artifact pull workflow child2-image && cat child2-image
+            - artifact pull workflow base-image || artifact pull project base-image && cat base-image
+            - artifact pull workflow child1-image || artifact pull workflow child1-image && cat child1-image
+            - artifact pull workflow child2-image || artifact pull workflow child2-image && cat child2-image
