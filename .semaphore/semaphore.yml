@@ -81,6 +81,6 @@ blocks:
       jobs:
         - name: gather images
           commands:
-            - artifact pull workflow base-image || artifact pull project base-image && cat base-image
-            - artifact pull workflow child1-image || artifact pull project child1-image && cat child1-image
-            - artifact pull workflow child2-image || artifact pull project child2-image && cat child2-image
+            - artifact pull workflow base-image &>/dev/null || artifact pull project base-image && cat base-image
+            - artifact pull workflow child1-image &>/dev/null || artifact pull project child1-image && cat child1-image
+            - artifact pull workflow child2-image &>/dev/null || artifact pull project child2-image && cat child2-image
