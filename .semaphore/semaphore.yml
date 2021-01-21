@@ -38,8 +38,8 @@ blocks:
             - DOCKER_BUILDKIT=1 docker build -t child1 --build-arg BUILDKIT_INLINE_CACHE=1 --progress=plain ./child1
             - 'docker tag child1 jsdx1/private:child1-$SEMAPHORE_GIT_SHA'
             - 'docker push jsdx1/private:child1-$SEMAPHORE_GIT_SHA'
-            - mkdir -p images && echo jsdx1/private:child1-$SEMAPHORE_GIT_SHA > images/child1
-            - artifact push workflow images/child1
+            - echo jsdx1/private:child1-$SEMAPHORE_GIT_SHA > child1-image
+            - artifact push workflow child1-image
       secrets:
         - name: Docker
       epilogue:
@@ -64,8 +64,8 @@ blocks:
             - DOCKER_BUILDKIT=1 docker build -t child2 --build-arg BUILDKIT_INLINE_CACHE=1 --progress=plain ./child2
             - 'docker tag child2 jsdx1/private:child2-$SEMAPHORE_GIT_SHA'
             - 'docker push jsdx1/private:child2-$SEMAPHORE_GIT_SHA'
-            - mkdir -p images && echo jsdx1/private:child2-$SEMAPHORE_GIT_SHA > images/child2
-            - artifact push workflow images/child2
+            - echo jsdx1/private:child2-$SEMAPHORE_GIT_SHA > child2-image
+            - artifact push workflow child2-image
       secrets:
         - name: Docker
   - name: Integration
@@ -79,6 +79,6 @@ blocks:
         - name: gather images
           commands:
             - artifact pull workflow base-image
-            - artifact pull workflow images/child1
-            - artifact pull workflow images/child2
+            - artifact pull workflow child1-image
+            - artifact pull workflow child2-image
             - cat images/*
