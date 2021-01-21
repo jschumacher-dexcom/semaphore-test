@@ -25,7 +25,7 @@ blocks:
     dependencies:
       - Base Image
     run:
-      when: "change_in('/child/'), {default_branch: 'main'})"
+      when: "change_in('/child/', {default_branch: 'main'})"
     task:
       jobs:
         - name: docker build
